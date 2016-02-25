@@ -1,1 +1,1 @@
-includes: ['layer:basic', 'interface:consul'] 
+includes: ['layer:basic', 'layer:leadership', 'interface:consul', 'interface:vault']
