@@ -37,7 +37,7 @@ def setup_vault(consul):
 
 
 @when('vault.ready', 'leadership.is_leader')
-@when_not('vault.running', 'leadership.set.root_token')
+@when_not('leadership.set.root_token')
 def vault_ready():
     # client = hvac.Client()
     client = hvac.Client(url='http://localhost:8200')
@@ -53,10 +53,7 @@ def vault_ready():
             root_token=result['root_token'],
             key=result['keys'][0])
 
-    set_state('vault.running')
-
-
-@when('vault.token.requested')
+@when('vault.token.requested', 'leadership.set.root_token')
 def generate_tokens(vault):
     # client = hvac.Client()
     client = hvac.Client(url='http://localhost:8200')
@@ -65,7 +62,8 @@ def generate_tokens(vault):
         if token:
             client.create_token(id=token, policies=['root'], display_name=service)
         else:
-            token = client.create_token(policies=['root'], display_name=service)
+            token = client.create_token(policies=['root'], display_name=service)['auth']['client_token']
+
         vault.provide_token(
             service=service,
             host=hookenv.unit_private_ip(),
