@@ -1,0 +1,12 @@
+image: iceyec/ci-charms
+
+stages:
+  - proof
+  # - test
+
+proof:
+  stage: proof
+  script:
+    - charm build -o build
+    - cd build/trusty/vault
+    - charm proof
