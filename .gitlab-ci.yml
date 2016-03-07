@@ -1,9 +1,16 @@
 image: iceyec/ci-charms
 
 stages:
+  - lint
   - proof
   # - test
 
+lint:
+  stage: lint
+  script:
+    - charm build -o build
+    - cd build/trusty/vault
+    - flake8 --exclude hooks/charmhelpers,tests/charmhelpers --ignore=E902 hooks tests unit_tests
 proof:
   stage: proof
   script:
